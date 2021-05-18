@@ -7,7 +7,7 @@
 [![Code style](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://prettier.io/)
 [![Bundlephobia](https://badgen.net/bundlephobia/min/@nexys/sql-migrations)](https://bundlephobia.com/result?p=@nexys/sql-migrations)
 
-Migrations for MySQL. Same interfaces and compatibility with flyway
+Migrations for MySQL. Same interfaces and compatibility with [flyway](https://flywaydb.org/)
 
 ## Get started
 
