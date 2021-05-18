@@ -1,5 +1,5 @@
 {
-  "name": "boilerplate_node_package",
+  "name": "@nexys/sql-migrations",
   "version": "0.0.0",
   "main": "dist/index.js",
   "files": [
@@ -7,18 +7,29 @@
   ],
   "author": "Nexys Sarl",
   "license": "MIT",
-  "scripts":{
-    "build":"tsc",
+  "scripts": {
+    "build": "tsc",
     "test": "jest"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Nexysweb/boilerplate-node-package"
+    "url": "https://github.com/nexys-system/sql-migrations"
   },
+  "keywords": [
+    "sql",
+    "migrations"
+  ],
   "devDependencies": {
     "@types/jest": "^25.2.3",
     "jest": "^26.0.1",
+    "mysql2": "^2.2.5",
     "ts-jest": "^25.3.1",
     "typescript": "^3.9.3"
+  },
+  "peerDependencies": {
+    "mysql2": "^2.2.5"
+  },
+  "dependencies": {
+    "crc-32": "^1.2.0"
   }
 }
