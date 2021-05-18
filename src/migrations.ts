@@ -39,7 +39,7 @@ export const runMigrations = async (migrations: T.Migration[], s: SQL) => {
     const version = U.toVersion(migration.version, migration.idx);
     const checksum = U.getChecksum(migration.sql);
 
-    // find previous migration with szme version and compare checksums
+    // find previous migration with same version and compare checksums
     if (U.findPreviousMigrations(version, checksum, y)) {
       return;
     }
@@ -69,7 +69,7 @@ export const runMigrations = async (migrations: T.Migration[], s: SQL) => {
     throw Error("something went wrong while applying migrations");
   }
 
-  console.log(rows);
+  // console.log(rows);
 
   return y.map((x) => {
     return { c: x.checksum, d: x.installed_rank };
