@@ -1,20 +1,5 @@
 import * as M from "./utils";
 
-// see https://stackoverflow.com/a/54175600/1659569 (because of mysql2)
-//require("iconv-lite").encodingExists("foo");
-
-//const s = Connection.init();
-
-/*test("creat table", async () => {
-  s.connection.connect();
-  const migrations: T.Migration[] = [
-    { sql: "fdsa", version: 1, idx: 1, name: "first" },
-    { sql: "fdsa2", version: 1, idx: 2, name: "second" },
-  ];
-  expect(await M.runMigrations(migrations, s)).toEqual({});
-  s.connection.end();
-});*/
-
 describe("check sequence", () => {
   test("right seq", () => {
     const s = [{ version: 0, idx: 1 }];
@@ -62,7 +47,7 @@ test("checksum", () => {
   expect(M.getChecksum(s)).toEqual(cs);
 });
 
-describe("find previsou migrations", () => {
+describe("find previous migrations", () => {
   const y = [{ version: "2.1", checksum: 123 }];
 
   test("does not exist", () => {
@@ -73,7 +58,7 @@ describe("find previsou migrations", () => {
     expect(M.findPreviousMigrations("2.1", 123, y)).toEqual(true);
   });
 
-  test("already exists but checksum different", () => {
+  test("already exists but different checksum", () => {
     try {
       M.findPreviousMigrations("2.1", 43, y);
     } catch (err) {
