@@ -20,7 +20,7 @@ export const createMigrationTable = [
   " `success` tinyint(1) NOT NULL,",
   " PRIMARY KEY (`installed_rank`),",
   " KEY `flyway_schema_history_s_idx` (`success`)",
-  ") ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci",
+  ") ENGINE=InnoDB",
 ].join("\n");
 
 export const getMigrations = `SELECT * FROM ${table};`;
