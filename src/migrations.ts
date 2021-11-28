@@ -49,7 +49,8 @@ export const runMigrations = async (
     const [rm] = await s.execQuery(migration.sql);
     const t2 = new Date().getTime();
 
-    const success = (rm as OkPacket).serverStatus;
+    const success: number = (rm as OkPacket).serverStatus || 1;
+    console.log({ rm });
     const row: T.MigrationRow = U.migrationToRow(
       migration.name,
       version,
