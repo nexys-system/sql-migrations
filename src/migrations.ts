@@ -49,8 +49,8 @@ export const runMigrations = async (
     const [rm] = await s.execQuery(migration.sql);
     const t2 = new Date().getTime();
 
-    const success: number = (rm as OkPacket).serverStatus || 1;
-    console.log({ rm });
+    const success: number = getSuccess(rm as OkPacket | OkPacket[]);
+
     const row: T.MigrationRow = U.migrationToRow(
       migration.name,
       version,
@@ -79,6 +79,16 @@ export const runMigrations = async (
   console.log(rm);
 
   return rows;
+};
+
+const getSuccess = (rm: OkPacket | OkPacket[]): number => {
+  // if array return the last one
+  if (Array.isArray(rm)) {
+    const l = rm.length;
+    return getSuccess(rm[l - 1]);
+  }
+
+  return rm.serverStatus;
 };
 
 const isNotNull = <A>(x: A | null | undefined): x is A =>
