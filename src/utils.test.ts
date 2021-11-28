@@ -40,6 +40,27 @@ test("to version", () => {
   expect(M.toVersion(2, 4)).toEqual("2.4");
 });
 
+test("to script", () => {
+  expect(M.toScript("2.4", "myname")).toEqual("v2_4__myname.sql");
+});
+
+test("migration to sql", () => {
+  const row = M.migrationToRow(
+    "myname",
+    "2.3",
+    123,
+    1,
+    1234567,
+    2,
+    "admin",
+    new Date(2021, 12, 1, 13, 45)
+  );
+
+  expect(M.migrationsToSQL([row])).toEqual(
+    'INSERT INTO `flyway_schema_history` (`installed_rank`, `version`, `description`, `type`, `script`, `checksum`, `installed_by`, `installed_on`, `execution_time`, `success`) VALUES (2, 2.3, "myname", "SQL", "v2_3__myname.sql", 1234567, "admin", "2022-01-01 12:45:00", 123, 1);'
+  );
+});
+
 test("checksum", () => {
   const cs = -1064643516;
   const s =

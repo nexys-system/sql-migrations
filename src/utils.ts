@@ -26,13 +26,47 @@ export const createMigrationTable = [
 export const getMigrations = `SELECT * FROM ${table};`;
 
 export const toVersion = (version: number, idx: number) => version + "." + idx;
-export const toScript = (version: string, name: string):string => `${version.replace(".", "_")}__${name}.sql`;
+export const toScript = (version: string, name: string): string =>
+  `v${version.replace(".", "_")}__${name}.sql`;
 
-const keys:(keyof T.MigrationRow)[] = ['installed_rank', 'version', 'description', 'type', 'script', 'checksum', 'installed_by', 'installed_on', 'execution_time', 'success'];
+const keys: (keyof T.MigrationRow)[] = [
+  "installed_rank",
+  "version",
+  "description",
+  "type",
+  "script",
+  "checksum",
+  "installed_by",
+  "installed_on",
+  "execution_time",
+  "success",
+];
 
 export const migrationsToSQL = (rows: T.MigrationRow[]) => {
-  return `INSERT INTO ${table} (installed_rank, version, description, type, script, checksum, installed_by, installed_on, execution_time, success) VALUES `
-}
+  const values = rows
+    .map((row) =>
+      keys
+        .map((k) => row[k])
+        .map((x) => {
+          const xn = Number(x);
+
+          if (isNaN(xn)) {
+            return `"${x}"`;
+          }
+
+          return xn;
+        })
+        .join(", ")
+    )
+    .map((x) => `(${x})`)
+    .join(", ");
+
+  return `INSERT INTO \`${table}\` (${keys
+    .map((x) => "`" + x + "`")
+    .join(", ")}) VALUES ${values};`;
+};
+
+const toSQLDate = (d: Date) => d.toJSON().slice(0, -5).replace(/[T]/g, " ");
 
 export const migrationToRow = (
   name: string,
@@ -40,19 +74,17 @@ export const migrationToRow = (
   execution_time: number,
   success: number,
   checksum: number,
-  lastRank: number,
-  installed_by: string = 'admin',
+  installed_rank: number,
+  installed_by: string = "admin",
   installed_on: Date = new Date(),
-  type: 'SQL' = 'SQL'
+  type: "SQL" = "SQL"
 ) => {
-  const installed_rank = lastRank + 1;
-  const versionString = version.replace(".", "_");
-  const script = toScript(version, name) ;
+  const script = toScript(version, name);
 
   const row: T.MigrationRow = {
     installed_by,
     execution_time,
-    installed_on: new Date(),
+    installed_on: toSQLDate(installed_on),
     description: name,
     checksum,
     installed_rank,

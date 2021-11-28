@@ -10,7 +10,7 @@ export interface MigrationRow {
   description: string;
   execution_time: number;
   installed_by: string;
-  installed_on: Date;
+  installed_on: string;
   installed_rank: number;
   script: string;
   success: number;

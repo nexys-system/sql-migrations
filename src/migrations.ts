@@ -19,7 +19,10 @@ interface SQL {
 
 // manages migration
 // inspiration from flyway - https://flywaydb.org/
-export const runMigrations = async (migrations: T.Migration[], s: SQL):Promise<T.MigrationRow[]> => {
+export const runMigrations = async (
+  migrations: T.Migration[],
+  s: SQL
+): Promise<T.MigrationRow[]> => {
   U.checkSequence(migrations);
   // create table if not exists
   //console.log(createMigrationTable);
@@ -31,11 +34,9 @@ export const runMigrations = async (migrations: T.Migration[], s: SQL):Promise<T
 
   const lastRow = U.getLastRow(y);
 
-  let lastRank = lastRow.installed_rank;
+  const lastRank = lastRow.installed_rank;
 
-  const rows: T.MigrationRow[] = [];
-
-  const pWaitForLoop = migrations.map(async (migration) => {
+  const pRows = migrations.map(async (migration, i) => {
     const version = U.toVersion(migration.version, migration.idx);
     const checksum = U.getChecksum(migration.sql);
 
@@ -49,27 +50,35 @@ export const runMigrations = async (migrations: T.Migration[], s: SQL):Promise<T
     const t2 = new Date().getTime();
 
     const success = (rm as OkPacket).serverStatus;
-    const row = U.migrationToRow(
+    const row: T.MigrationRow = U.migrationToRow(
       migration.name,
       version,
       t2 - t1,
       success,
       checksum,
-      lastRank
+      lastRank + i + 1
     );
-    lastRank += 1;
 
-    rows.push(row);
-    return 1;
+    return row;
   });
 
-  const waitForLoop = await Promise.all(pWaitForLoop);
+  const rawRows = await Promise.all(pRows);
 
-  if (waitForLoop.length !== migrations.length) {
+  const rows: T.MigrationRow[] = rawRows.filter(isNotNull);
+
+  if (rows.length !== migrations.length) {
     throw Error("something went wrong while applying migrations");
   }
 
   // console.log(rows);
 
+  // enter result in flyway table
+  const sql = U.migrationsToSQL(rows);
+  const [rm] = await s.execQuery(sql);
+  console.log(rm);
+
   return rows;
 };
+
+const isNotNull = <A>(x: A | null | undefined): x is A =>
+  x !== null && x !== undefined;
