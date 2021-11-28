@@ -84,6 +84,11 @@ export const runMigrations = async (
   return rows;
 };
 
+/**
+ * @note more information on serverStatus: https://github.com/mysqljs/mysql/issues/745 and https://dev.mysql.com/doc/internals/en/status-flags.html
+ * @param rm: can be an array or a scalar
+ * @returns the serverstatus of the last call
+ */
 const getSuccess = (rm: OkPacket | OkPacket[]): number => {
   // if array return the last one
   if (Array.isArray(rm)) {
