@@ -57,7 +57,7 @@ test("migration to sql", () => {
   );
 
   expect(M.migrationsToSQL([row])).toEqual(
-    'INSERT INTO `flyway_schema_history` (`installed_rank`, `version`, `description`, `type`, `script`, `checksum`, `installed_by`, `installed_on`, `execution_time`, `success`) VALUES (2, 2.3, "myname", "SQL", "v2_3__myname.sql", 1234567, "admin", "2022-01-01 12:45:00", 123, 1);'
+    'INSERT INTO `flyway_schema_history` (`installed_rank`, `version`, `description`, `type`, `script`, `checksum`, `installed_by`, `installed_on`, `execution_time`, `success`) VALUES (2, 2.3, "myname", "SQL", "v2_3__myname.sql", 1234567, "admin", "2022-01-01 13:45:00", 123, 1);'
   );
 });
 
