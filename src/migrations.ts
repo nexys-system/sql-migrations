@@ -1,4 +1,3 @@
-import * as T from "./type";
 import {
   OkPacket,
   ResultSetHeader,
@@ -6,6 +5,9 @@ import {
   FieldPacket,
 } from "mysql2/promise";
 
+//import * as T from "@nexys/sql-migrations/dist/type";
+//import * as U from "@nexys/sql-migrations/dist/utils";
+import * as T from "./type";
 import * as U from "./utils";
 
 type Response = [
@@ -32,9 +34,7 @@ export const runMigrations = async (
   const [r] = await s.execQuery(U.getMigrations);
   const y = r as RowDataPacket[] as T.MigrationRow[];
 
-  const lastRow = U.getLastRow(y);
-
-  const lastRank = lastRow.installed_rank;
+  const { installed_rank: lastRank } = U.getLastRow(y);
 
   const pRows = migrations.map(async (migration, i) => {
     const version = U.toVersion(migration.version, migration.idx);
@@ -65,13 +65,16 @@ export const runMigrations = async (
 
   const rawRows = await Promise.all(pRows);
 
-  const rows: T.MigrationRow[] = rawRows.filter(isNotNull);
-
-  if (rows.length !== migrations.length) {
-    throw Error("something went wrong while applying migrations");
+  // note here that we compare raw rows since some can be empyt because the migrations were applied earlier
+  if (rawRows.length !== migrations.length) {
+    throw "something went wrong while applying migrations";
   }
 
-  // console.log(rows);
+  const rows: T.MigrationRow[] = rawRows.filter(isNotNull);
+
+  if (rows.length === 0) {
+    return [];
+  }
 
   // enter result in flyway table
   const sql = U.migrationsToSQL(rows);
