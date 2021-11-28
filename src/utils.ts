@@ -26,6 +26,13 @@ export const createMigrationTable = [
 export const getMigrations = `SELECT * FROM ${table};`;
 
 export const toVersion = (version: number, idx: number) => version + "." + idx;
+export const toScript = (version: string, name: string):string => `${version.replace(".", "_")}__${name}.sql`;
+
+const keys:(keyof T.MigrationRow)[] = ['installed_rank', 'version', 'description', 'type', 'script', 'checksum', 'installed_by', 'installed_on', 'execution_time', 'success'];
+
+export const migrationsToSQL = (rows: T.MigrationRow[]) => {
+  return `INSERT INTO ${table} (installed_rank, version, description, type, script, checksum, installed_by, installed_on, execution_time, success) VALUES `
+}
 
 export const migrationToRow = (
   name: string,
@@ -33,15 +40,17 @@ export const migrationToRow = (
   execution_time: number,
   success: number,
   checksum: number,
-  lastRank: number
+  lastRank: number,
+  installed_by: string = 'admin',
+  installed_on: Date = new Date(),
+  type: 'SQL' = 'SQL'
 ) => {
   const installed_rank = lastRank + 1;
   const versionString = version.replace(".", "_");
-  const script = `${versionString}__${name}.sql`;
+  const script = toScript(version, name) ;
 
-  const type = "SQL";
   const row: T.MigrationRow = {
-    installed_by: "admin",
+    installed_by,
     execution_time,
     installed_on: new Date(),
     description: name,

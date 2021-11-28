@@ -19,7 +19,7 @@ interface SQL {
 
 // manages migration
 // inspiration from flyway - https://flywaydb.org/
-export const runMigrations = async (migrations: T.Migration[], s: SQL) => {
+export const runMigrations = async (migrations: T.Migration[], s: SQL):Promise<T.MigrationRow[]> => {
   U.checkSequence(migrations);
   // create table if not exists
   //console.log(createMigrationTable);
@@ -71,7 +71,5 @@ export const runMigrations = async (migrations: T.Migration[], s: SQL) => {
 
   // console.log(rows);
 
-  return y.map((x) => {
-    return { c: x.checksum, d: x.installed_rank };
-  });
+  return rows;
 };
