@@ -51,7 +51,7 @@ export const migrationsToSQL = (rows: T.MigrationRow[]) => {
           const xn = Number(x);
 
           if (isNaN(xn)) {
-            return `"${x}"`;
+            return `'${x}'`;
           }
 
           return xn;
