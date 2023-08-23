@@ -1,3 +1,5 @@
+*the content of this repository was moved to [FetchR](https://github.com/nexys-system/fetch-r), release [v0.9.0](https://github.com/nexys-system/fetch-r/releases/tag/v0.9.0)*
+
 # SQL-Migrations
 
 [![npm version](https://badge.fury.io/js/@nexys%2Fsql-migrations.svg)](https://www.npmjs.com/package/@nexys/sql-migrations)
